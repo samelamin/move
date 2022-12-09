@@ -6,9 +6,10 @@ use crate::{
     paths::{self, Path},
     shared::*,
 };
-use std::{
+use sp_std::{
     cmp::Ordering,
-    collections::{BTreeMap, BTreeSet},
+    collections::{btree_map::BTreeMap,btree_set::BTreeSet},
+    vec,
     fmt,
     fmt::Debug,
 };
@@ -130,7 +131,7 @@ impl<Loc: Copy, Lbl: Clone + Ord> BorrowEdgeSet<Loc, Lbl> {
         self.edges.is_empty()
     }
 
-    pub(crate) fn iter(&self) -> std::collections::btree_set::Iter<BorrowEdge<Loc, Lbl>> {
+    pub(crate) fn iter(&self) -> sp_std::collections::btree_set::Iter<BorrowEdge<Loc, Lbl>> {
         debug_assert!(self.overflown || !self.is_empty());
         self.edges.iter()
     }
@@ -163,7 +164,7 @@ impl<Loc: Copy, Lbl: Clone + Ord> BorrowEdges<Loc, Lbl> {
     /// If it is not in the map, the id remains the same
     pub(crate) fn remap_refs(&mut self, id_map: &BTreeMap<RefID, RefID>) {
         let _before = self.0.len();
-        self.0 = std::mem::take(&mut self.0)
+        self.0 = sp_std::mem::take(&mut self.0)
             .into_iter()
             .map(|(id, edges)| (id_map.get(&id).copied().unwrap_or(id), edges))
             .collect();
@@ -233,7 +234,7 @@ impl<Loc: Copy, Lbl: Clone + Ord + Debug> Debug for BorrowEdge<Loc, Lbl> {
 
 impl<Loc: Copy, Lbl: Clone + Ord> IntoIterator for BorrowEdgeSet<Loc, Lbl> {
     type Item = BorrowEdge<Loc, Lbl>;
-    type IntoIter = std::collections::btree_set::IntoIter<BorrowEdge<Loc, Lbl>>;
+    type IntoIter = sp_std::collections::btree_set::IntoIter<BorrowEdge<Loc, Lbl>>;
 
     fn into_iter(self) -> Self::IntoIter {
         debug_assert!(self.overflown || !self.is_empty());
@@ -243,7 +244,7 @@ impl<Loc: Copy, Lbl: Clone + Ord> IntoIterator for BorrowEdgeSet<Loc, Lbl> {
 
 impl<'a, Loc: Copy, Lbl: Clone + Ord> IntoIterator for &'a BorrowEdgeSet<Loc, Lbl> {
     type Item = &'a BorrowEdge<Loc, Lbl>;
-    type IntoIter = std::collections::btree_set::Iter<'a, BorrowEdge<Loc, Lbl>>;
+    type IntoIter = sp_std::collections::btree_set::Iter<'a, BorrowEdge<Loc, Lbl>>;
 
     fn into_iter(self) -> Self::IntoIter {
         debug_assert!(self.overflown || !self.is_empty());

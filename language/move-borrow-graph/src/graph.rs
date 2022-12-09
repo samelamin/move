@@ -3,11 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{
-    paths::{self, Path, PathSlice},
+    paths::{self, Path},
     references::*,
 };
-use std::collections::{BTreeMap, BTreeSet};
-
+use sp_std::collections::{btree_map::BTreeMap,btree_set::BTreeSet};
+use sp_std::{vec, vec::Vec};
 //**************************************************************************************************
 // Definitions
 //**************************************************************************************************
@@ -326,7 +326,7 @@ impl<Loc: Copy, Lbl: Clone + Ord> BorrowGraph<Loc, Lbl> {
     pub fn remap_refs(&mut self, id_map: &BTreeMap<RefID, RefID>) {
         debug_assert!(self.check_invariant());
         let _before = self.0.len();
-        self.0 = std::mem::take(&mut self.0)
+        self.0 = sp_std::mem::take(&mut self.0)
             .into_iter()
             .map(|(id, mut info)| {
                 info.remap_refs(id_map);
@@ -431,6 +431,7 @@ impl<Loc: Copy, Lbl: Clone + Ord> BorrowGraph<Loc, Lbl> {
 
     /// Prints out a view of the borrow graph
     #[allow(dead_code)]
+    #[cfg(feature = "std")]
     pub fn display(&self)
     where
         Lbl: std::fmt::Display,

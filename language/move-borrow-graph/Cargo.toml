@@ -5,3 +5,13 @@ authors = ["Diem Association <opensource@diem.com>"]
 publish = false
 edition = "2021"
 license = "Apache-2.0"
+
+[dependencies]
+sp-std = { git = "https://github.com/paritytech/substrate",  default-features = false , branch = "polkadot-v0.9.31" }
+
+
+[features]
+default = ["std"]
+std = [
+     "sp-std/std"
+]

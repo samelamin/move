@@ -1,6 +1,7 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
 // SPDX-License-Identifier: Apache-2.0
+use sp_std::{borrow::ToOwned, vec::Vec};
 
 pub type PathSlice<Lbl> = [Lbl];
 pub type Path<Lbl> = Vec<Lbl>;
