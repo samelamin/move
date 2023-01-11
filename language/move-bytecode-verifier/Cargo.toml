@@ -12,14 +12,22 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.52"
 petgraph = "0.5.1"
+hashbrown = { version = "0.12.3" }
 
-move-borrow-graph = { path = "../move-borrow-graph" }
-move-binary-format = { path = "../move-binary-format" }
-move-core-types = { path = "../move-core/types" }
+move-borrow-graph = { path = "../move-borrow-graph", default-features = false  }
+move-binary-format = { path = "../move-binary-format", default-features = false  }
+move-core-types = { path = "../move-core/types", default-features = false  }
+sp-std = { git = "https://github.com/paritytech/substrate",  default-features = false , branch = "polkadot-v0.9.29" }
 
 [dev-dependencies]
 hex-literal = "0.3.4"
 invalid-mutations = { path = "invalid-mutations" }
 
 [features]
-default = []
+default = ["std"]
+std = [
+    "move-borrow-graph/std",
+    "move-binary-format/std",
+    "move-core-types/std",
+    "sp-std/std",
+]

@@ -16,6 +16,7 @@ use move_binary_format::{
     },
 };
 use move_core_types::vm_status::StatusCode;
+use crate::alloc::string::ToString;
 
 pub struct InstructionConsistency<'a> {
     resolver: BinaryIndexedView<'a>,

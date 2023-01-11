@@ -24,6 +24,7 @@ use move_binary_format::{
     IndexKind,
 };
 use move_core_types::{identifier::IdentStr, vm_status::StatusCode};
+use crate::alloc::string::ToString;
 
 pub type FnCheckScriptSignature = fn(
     &BinaryIndexedView,

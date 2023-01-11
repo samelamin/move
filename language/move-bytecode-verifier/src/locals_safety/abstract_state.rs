@@ -11,6 +11,7 @@ use move_binary_format::{
     file_format::{AbilitySet, CodeOffset, FunctionDefinitionIndex, LocalIndex},
 };
 use move_core_types::vm_status::StatusCode;
+use sp_std::{vec::Vec};
 
 /// LocalState represents the current assignment state of a local
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

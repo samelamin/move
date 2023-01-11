@@ -27,7 +27,8 @@ use move_binary_format::{
     CompiledModule,
 };
 use move_core_types::vm_status::StatusCode;
-use std::collections::BTreeSet;
+use sp_std::collections::btree_set::BTreeSet;
+use sp_std::{vec::Vec};
 
 /// Perform control flow verification on the compiled function, returning its `FunctionView` if
 /// verification was successful.

@@ -22,7 +22,10 @@ use move_binary_format::{
     safe_assert, safe_unwrap,
 };
 use move_core_types::vm_status::StatusCode;
-use std::collections::{BTreeSet, HashMap};
+use sp_std::collections::{btree_set::BTreeSet};
+use hashbrown::HashMap;
+use sp_std::{vec,vec::Vec};
+use sp_std::boxed::Box;
 
 struct ReferenceSafetyAnalysis<'a> {
     resolver: &'a BinaryIndexedView<'a>,

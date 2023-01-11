@@ -17,6 +17,9 @@ use move_binary_format::{
     IndexKind,
 };
 use move_core_types::vm_status::StatusCode;
+use sp_std::{vec::Vec};
+
+use crate::alloc::string::ToString;
 
 pub struct SignatureChecker<'a> {
     resolver: BinaryIndexedView<'a>,

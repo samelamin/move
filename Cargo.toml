@@ -2,6 +2,7 @@
 resolver = "2"
 
 members = [
+    "language/move-bytecode-verifier",
     "language/move-binary-format",
     "language/move-borrow-graph",
     "language/move-core/types",

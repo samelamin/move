@@ -14,7 +14,10 @@ use move_binary_format::{
     safe_unwrap,
 };
 use move_core_types::vm_status::StatusCode;
-use std::{collections::HashSet, convert::TryInto};
+use sp_std::{convert::TryInto};
+
+use sp_std::{vec,vec::Vec};
+use hashbrown::HashSet;
 
 pub fn verify(
     verifier_config: &VerifierConfig,

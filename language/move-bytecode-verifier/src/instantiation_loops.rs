@@ -28,7 +28,9 @@ use petgraph::{
     visit::EdgeRef,
     Graph,
 };
-use std::collections::{hash_map, HashMap, HashSet};
+use hashbrown::{hash_map,HashMap,HashSet};
+use sp_std::{vec::Vec};
+use alloc::string::String;
 
 /// Data attached to each node.
 /// Each node corresponds to a type formal of a generic function in the module.

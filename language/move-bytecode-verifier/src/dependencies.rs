@@ -16,7 +16,9 @@ use move_binary_format::{
     safe_unwrap, IndexKind,
 };
 use move_core_types::{identifier::Identifier, language_storage::ModuleId, vm_status::StatusCode};
-use std::collections::{BTreeMap, BTreeSet};
+use sp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
+use sp_std::borrow::ToOwned;
+use crate::alloc::string::ToString;
 
 struct Context<'a, 'b> {
     resolver: BinaryIndexedView<'a>,

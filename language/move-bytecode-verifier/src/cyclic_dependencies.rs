@@ -9,7 +9,8 @@ use move_binary_format::{
     file_format::CompiledModule,
 };
 use move_core_types::{language_storage::ModuleId, vm_status::StatusCode};
-use std::collections::BTreeSet;
+use sp_std::collections::btree_set::BTreeSet;
+use sp_std::{vec::Vec};
 
 // This function performs a DFS in the module graph starting from each node in `items_to_explore`
 // and explores the neighbors of a node using the `immediate_nexts` closure.

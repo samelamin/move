@@ -22,7 +22,8 @@ use move_binary_format::{
 use move_core_types::{
     account_address::AccountAddress, identifier::Identifier, vm_status::StatusCode,
 };
-use std::{collections::HashSet, hash::Hash};
+use hashbrown::{HashSet};
+use sp_std::hash::Hash;
 
 pub struct DuplicationChecker<'a> {
     module: &'a CompiledModule,

@@ -15,7 +15,8 @@ use move_binary_format::{
 };
 use move_borrow_graph::references::RefID;
 use move_core_types::vm_status::StatusCode;
-use std::collections::{BTreeMap, BTreeSet};
+use sp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
+use sp_std::{vec::Vec};
 
 type BorrowGraph = move_borrow_graph::graph::BorrowGraph<(), Label>;
 
@@ -28,6 +29,7 @@ pub(crate) enum AbstractValue {
 }
 
 impl AbstractValue {
+
     /// checks if self is a reference
     pub fn is_reference(&self) -> bool {
         match self {
@@ -59,6 +61,7 @@ enum Label {
 }
 
 // Needed for debugging with the borrow graph
+#[cfg(feature = "std")]
 impl std::fmt::Display for Label {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {

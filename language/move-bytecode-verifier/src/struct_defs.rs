@@ -17,7 +17,8 @@ use move_binary_format::{
 };
 use move_core_types::vm_status::StatusCode;
 use petgraph::{algo::toposort, graphmap::DiGraphMap};
-use std::collections::{BTreeMap, BTreeSet};
+use sp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
+use sp_std::borrow::ToOwned;
 
 pub struct RecursiveStructDefChecker<'a> {
     module: &'a CompiledModule,

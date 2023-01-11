@@ -12,7 +12,7 @@ use move_binary_format::{
     IndexKind,
 };
 use move_core_types::vm_status::StatusCode;
-
+use sp_std::{vec::Vec};
 pub fn verify_module(module: &CompiledModule) -> VMResult<()> {
     verify_module_impl(module).map_err(|e| e.finish(Location::Module(module.self_id())))
 }
