@@ -12,11 +12,11 @@
 //! http://dwarfstd.org/Dwarf3Std.php or https://en.wikipedia.org/wiki/LEB128.
 //! It's used to compress mostly indexes into the main binary tables.
 use crate::file_format::Bytecode;
+use sp_std::vec;
+use sp_std::vec::Vec;
 use anyhow::{bail, Result};
-use std::{
-    io::{Cursor, Read},
-    mem::size_of,
-};
+use core::mem::size_of;
+use crate::alloc::string::ToString;
 
 /// Constant values for the binary format header.
 ///
@@ -337,6 +337,7 @@ pub(crate) fn write_u256(
     binary.extend(&value.to_le_bytes())
 }
 
+
 pub fn read_u8(cursor: &mut Cursor<&[u8]>) -> Result<u8> {
     let mut buf = [0; 1];
     cursor.read_exact(&mut buf)?;
@@ -415,7 +416,8 @@ pub const VERSION_MIN: u32 = VERSION_5;
 pub(crate) mod versioned_data {
     use crate::{errors::*, file_format_common::*};
     use move_core_types::vm_status::StatusCode;
-    use std::io::{Cursor, Read};
+    use crate::cursor::Cursor;
+
     pub struct VersionedBinary<'a> {
         version: u32,
         binary: &'a [u8],
@@ -423,7 +425,7 @@ pub(crate) mod versioned_data {
 
     pub struct VersionedCursor<'a> {
         version: u32,
-        cursor: Cursor<&'a [u8]>,
+        cursor: crate::cursor::Cursor<&'a [u8]>,
     }
 
     impl<'a> VersionedBinary<'a> {
@@ -497,6 +499,14 @@ pub(crate) mod versioned_data {
             }
         }
 
+        pub fn read(&mut self, buf: &mut [u8]) -> Result<usize> {
+            self.cursor.read(buf)
+        }
+
+        pub fn read_exact(&mut self, buf: &mut [u8]) -> Result<()> {
+            self.cursor.read_exact(buf)
+        }
+
         pub fn read_u8(&mut self) -> Result<u8> {
             read_u8(&mut self.cursor)
         }
@@ -535,14 +545,9 @@ pub(crate) mod versioned_data {
         }
     }
 
-    impl<'a> Read for VersionedCursor<'a> {
-        fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
-            self.cursor.read(buf)
-        }
-    }
 }
-pub(crate) use versioned_data::{VersionedBinary, VersionedCursor};
-
+pub use versioned_data::{VersionedBinary, VersionedCursor};
+use crate::cursor::Cursor;
 /// The encoding of the instruction is the serialized form of it, but disregarding the
 /// serialization of the instruction's argument(s).
 pub fn instruction_key(instruction: &Bytecode) -> u8 {

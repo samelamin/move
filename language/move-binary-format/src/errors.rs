@@ -10,11 +10,15 @@ use move_core_types::{
     language_storage::ModuleId,
     vm_status::{self, StatusCode, StatusType, VMStatus},
 };
-use std::fmt;
+use sp_std::fmt;
+use sp_std::{vec,vec::Vec};
+use sp_std::boxed::Box;
+use alloc::string::String;
+use alloc::format;
 
-pub type VMResult<T> = ::std::result::Result<T, VMError>;
-pub type BinaryLoaderResult<T> = ::std::result::Result<T, PartialVMError>;
-pub type PartialVMResult<T> = ::std::result::Result<T, PartialVMError>;
+pub type VMResult<T> = ::sp_std::result::Result<T, VMError>;
+pub type BinaryLoaderResult<T> = ::sp_std::result::Result<T, PartialVMError>;
+pub type PartialVMResult<T> = ::sp_std::result::Result<T, PartialVMError>;
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub enum Location {
@@ -241,7 +245,7 @@ impl fmt::Debug for VMError_ {
             .finish()
     }
 }
-
+#[cfg(feature = "std")]
 impl std::error::Error for VMError {}
 
 #[derive(Clone)]
@@ -525,6 +529,7 @@ impl fmt::Debug for PartialVMError_ {
     }
 }
 
+#[cfg(feature = "std")]
 impl std::error::Error for PartialVMError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         None

@@ -24,10 +24,12 @@ use proptest::{
     prelude::*,
     sample::{select, Index as PropIndex},
 };
-use std::{
-    collections::{BTreeSet, HashMap, HashSet},
+use sp_std::{
+    collections::{btree_set::BTreeSet},
     hash::Hash,
 };
+use hashbrown::{HashMap, HashSet};
+
 
 #[derive(Debug, Default)]
 struct SignatureState {

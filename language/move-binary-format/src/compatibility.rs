@@ -2,7 +2,7 @@
 // Copyright (c) The Move Contributors
 // SPDX-License-Identifier: Apache-2.0
 
-use std::collections::BTreeSet;
+use sp_std::collections::btree_set::BTreeSet;
 
 use crate::{
     errors::{PartialVMError, PartialVMResult},

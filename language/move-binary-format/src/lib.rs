@@ -3,23 +3,27 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #![forbid(unsafe_code)]
+#![cfg_attr(not(feature = "std"), no_std)]
 
-use std::fmt;
+use sp_std::fmt;
 
 pub mod access;
 pub mod binary_views;
 pub mod check_bounds;
 pub mod compatibility;
 #[macro_use]
+extern crate alloc;
 pub mod errors;
 pub mod constant;
 pub mod control_flow_graph;
+pub mod cursor;
 pub mod deserializer;
 pub mod file_format;
 pub mod file_format_common;
 pub mod internals;
 pub mod normalized;
 #[cfg(any(test, feature = "fuzzing"))]
+#[cfg(feature = "std")]
 pub mod proptest_types;
 pub mod serializer;
 pub mod views;

@@ -4,7 +4,7 @@
 
 use crate::file_format_common::*;
 use proptest::prelude::*;
-use std::io::{Cursor, Read};
+use crate::cursor::Cursor;
 
 // verify all bytes in the vector have the high bit set except the last one
 fn check_vector(buf: &[u8]) {

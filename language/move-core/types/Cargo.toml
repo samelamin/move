@@ -44,6 +44,7 @@ default = ["std"]
 fuzzing = ["proptest", "proptest-derive"]
 
 std = [
+    "arbitrary",
     "anyhow/std",
     "sp-core/std",
     "sp-std/std",

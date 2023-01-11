@@ -16,7 +16,10 @@ use move_core_types::{
     language_storage::{ModuleId, StructTag, TypeTag},
 };
 use serde::{Deserialize, Serialize};
-use std::collections::BTreeMap;
+use sp_std::collections::btree_map::BTreeMap;
+use sp_std::boxed::Box;
+use sp_std::{vec::Vec};
+use sp_std::borrow::ToOwned;
 
 /// Defines normalized representations of Move types, fields, kinds, structs, functions, and
 /// modules. These representations are useful in situations that require require comparing
@@ -375,8 +378,8 @@ impl From<TypeTag> for Type {
     }
 }
 
-impl std::fmt::Display for Type {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl sp_std::fmt::Display for Type {
+    fn fmt(&self, f: &mut sp_std::fmt::Formatter) -> sp_std::fmt::Result {
         match self {
             Type::Struct {
                 address,

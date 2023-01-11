@@ -7,7 +7,12 @@ use move_core_types::{
     account_address::AccountAddress, identifier::Identifier, metadata::Metadata,
     vm_status::StatusCode,
 };
-use std::{collections::HashSet, convert::TryInto, io::Read};
+use hashbrown::HashSet;
+use sp_std::{convert::TryInto};
+use sp_std::{vec,vec::Vec};
+use sp_std::boxed::Box;
+use crate::alloc::string::ToString;
+use alloc::format;
 
 impl CompiledScript {
     /// Deserializes a &[u8] slice into a `CompiledScript` instance.
@@ -931,8 +936,11 @@ fn load_signature_tokens(cursor: &mut VersionedCursor) -> BinaryLoaderResult<Vec
 }
 
 #[cfg(test)]
+use crate::cursor::Cursor;
+
+#[cfg(test)]
 pub fn load_signature_token_test_entry(
-    cursor: std::io::Cursor<&[u8]>,
+    cursor: Cursor<&[u8]>,
 ) -> BinaryLoaderResult<SignatureToken> {
     load_signature_token(&mut VersionedCursor::new_for_test(VERSION_MAX, cursor))
 }

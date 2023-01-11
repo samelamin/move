@@ -8,7 +8,7 @@ use crate::{
     file_format_common::{BinaryData, SerializedType, SIGNATURE_TOKEN_DEPTH_MAX},
     serializer::{serialize_signature_token, serialize_signature_token_unchecked},
 };
-use std::io::Cursor;
+use crate::cursor::Cursor;
 
 #[test]
 fn serialize_and_deserialize_nested_types_max() {

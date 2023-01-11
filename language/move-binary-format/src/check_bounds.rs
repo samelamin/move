@@ -18,6 +18,7 @@ use crate::{
     IndexKind,
 };
 use move_core_types::vm_status::StatusCode;
+use alloc::format;
 
 enum BoundsCheckingContext {
     Module,

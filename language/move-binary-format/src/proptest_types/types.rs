@@ -21,7 +21,7 @@ use proptest::{
     sample::Index as PropIndex,
     std_facade::hash_set::HashSet,
 };
-use std::collections::BTreeSet;
+use sp_std::collections::btree_set::BTreeSet;
 
 #[derive(Debug)]
 struct TypeSignatureIndex(u16);

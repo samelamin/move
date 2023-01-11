@@ -10,6 +10,8 @@ use move_core_types::{
     identifier::{IdentStr, Identifier},
     language_storage::ModuleId,
 };
+use sp_std::{vec::Vec};
+use sp_std::borrow::ToOwned;
 
 /// Represents accessors for a compiled module.
 ///

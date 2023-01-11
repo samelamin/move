@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::file_format::{Constant, SignatureToken};
+use sp_std::boxed::Box;
 
 use move_core_types::value::{MoveTypeLayout, MoveValue};
 

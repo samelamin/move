@@ -23,6 +23,9 @@ use move_core_types::{
     language_storage::ModuleId,
     vm_status::StatusCode,
 };
+use sp_std::{vec,vec::Vec};
+use sp_std::borrow::ToOwned;
+
 
 // A `BinaryIndexedView` provides table indexed access for both `CompiledModule` and
 // `CompiledScript`.
