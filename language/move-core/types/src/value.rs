@@ -2,6 +2,7 @@
 // Copyright (c) The Move Contributors
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::alloc::string::ToString;
 use crate::{
     account_address::AccountAddress,
     identifier::Identifier,
@@ -14,10 +15,13 @@ use serde::{
     ser::{SerializeMap, SerializeSeq, SerializeStruct, SerializeTuple},
     Deserialize, Serialize,
 };
-use std::{
+
+use sp_std::boxed::Box;
+use sp_std::{
     convert::TryInto,
     fmt::{self, Debug},
 };
+use sp_std::{vec::Vec};
 
 /// In the `WithTypes` configuration, a Move struct gets serialized into a Serde struct with this name
 pub const MOVE_STRUCT_NAME: &str = "struct";
@@ -503,13 +507,13 @@ impl serde::Serialize for MoveStruct {
 }
 
 impl fmt::Display for MoveFieldLayout {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}: {}", self.name, self.layout)
     }
 }
 
 impl fmt::Display for MoveTypeLayout {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         use MoveTypeLayout::*;
         match self {
             Bool => write!(f, "bool"),
@@ -528,7 +532,7 @@ impl fmt::Display for MoveTypeLayout {
 }
 
 impl fmt::Display for MoveStructLayout {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{{ ")?;
         match self {
             Self::Runtime(layouts) => {

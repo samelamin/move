@@ -1,7 +1,7 @@
 // Copyright (c) The Diem Core Contributors
 // Copyright (c) The Move Contributors
 // SPDX-License-Identifier: Apache-2.0
-use sp_std::collections::{btree_map::BTreeMap,btree_set::BTreeSet};
+use sp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
 
 pub fn remap_set<T: Copy + Ord>(set: &mut BTreeSet<T>, id_map: &BTreeMap<T, T>) {
     let _before = set.len();

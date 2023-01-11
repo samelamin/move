@@ -7,7 +7,7 @@ use bcs::test_helpers::assert_canonical_encode_decode;
 use once_cell::sync::Lazy;
 use proptest::prelude::*;
 use regex::Regex;
-use std::borrow::Borrow;
+use sp_std::borrow::Borrow;
 
 #[test]
 fn valid_identifiers() {

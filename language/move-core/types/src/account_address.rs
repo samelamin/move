@@ -2,13 +2,16 @@
 // Copyright (c) The Move Contributors
 // SPDX-License-Identifier: Apache-2.0
 
+use crate::alloc::string::ToString;
+use alloc::string::String;
 use hex::FromHex;
+#[cfg(feature = "std")]
 use rand::{rngs::OsRng, Rng};
-use serde::{de::Error as _, Deserialize, Deserializer, Serialize, Serializer};
-use std::{convert::TryFrom, fmt, str::FromStr};
-
+use serde::{Deserialize, Serialize};
+use sp_std::{convert::TryFrom, fmt, str::FromStr};
+use sp_std::{vec::Vec};
 /// A struct that represents an account address.
-#[derive(Ord, PartialOrd, Eq, PartialEq, Hash, Clone, Copy)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Hash, Clone, Copy, Serialize, Deserialize)]
 #[cfg_attr(any(test, feature = "fuzzing"), derive(proptest_derive::Arbitrary))]
 #[cfg_attr(any(test, feature = "fuzzing"), derive(arbitrary::Arbitrary))]
 pub struct AccountAddress([u8; AccountAddress::LENGTH]);
@@ -40,6 +43,7 @@ impl AccountAddress {
         Self(addr)
     }
 
+    #[cfg(feature = "std")]
     pub fn random() -> Self {
         let mut rng = OsRng;
         let buf: [u8; Self::LENGTH] = rng.gen();
@@ -119,7 +123,7 @@ impl AsRef<[u8]> for AccountAddress {
     }
 }
 
-impl std::ops::Deref for AccountAddress {
+impl sp_std::ops::Deref for AccountAddress {
     type Target = [u8; Self::LENGTH];
 
     fn deref(&self) -> &Self::Target {
@@ -128,7 +132,7 @@ impl std::ops::Deref for AccountAddress {
 }
 
 impl fmt::Display for AccountAddress {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{:x}", self)
     }
 }
@@ -242,47 +246,47 @@ impl FromStr for AccountAddress {
     }
 }
 
-impl<'de> Deserialize<'de> for AccountAddress {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        if deserializer.is_human_readable() {
-            let s = <String>::deserialize(deserializer)?;
-            AccountAddress::from_str(&s).map_err(D::Error::custom)
-        } else {
-            // In order to preserve the Serde data model and help analysis tools,
-            // make sure to wrap our value in a container with the same name
-            // as the original type.
-            #[derive(::serde::Deserialize)]
-            #[serde(rename = "AccountAddress")]
-            struct Value([u8; AccountAddress::LENGTH]);
-
-            let value = Value::deserialize(deserializer)?;
-            Ok(AccountAddress::new(value.0))
-        }
-    }
-}
-
-impl Serialize for AccountAddress {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        if serializer.is_human_readable() {
-            self.to_hex().serialize(serializer)
-        } else {
-            // See comment in deserialize.
-            serializer.serialize_newtype_struct("AccountAddress", &self.0)
-        }
-    }
-}
+// impl<'de> Deserialize<'de> for AccountAddress {
+//     fn deserialize<D>(deserializer: D) -> sp_std::result::Result<Self, D::Error>
+//     where
+//         D: Deserializer<'de>,
+//     {
+//         if deserializer.is_human_readable() {
+//             let s = <String>::deserialize(deserializer)?;
+//             AccountAddress::from_str(&s).map_err(D::Error::custom)
+//         } else {
+//             // In order to preserve the Serde data model and help analysis tools,
+//             // make sure to wrap our value in a container with the same name
+//             // as the original type.
+//             #[derive(::serde::Deserialize)]
+//             #[serde(rename = "AccountAddress")]
+//             struct Value([u8; AccountAddress::LENGTH]);
+//
+//             let value = Value::deserialize(deserializer)?;
+//             Ok(AccountAddress::new(value.0))
+//         }
+//     }
+// }
+//
+// impl Serialize for AccountAddress {
+//     fn serialize<S>(&self, serializer: S) -> sp_std::result::Result<S::Ok, S::Error>
+//     where
+//         S: Serializer,
+//     {
+//         if serializer.is_human_readable() {
+//             self.to_hex().serialize(serializer)
+//         } else {
+//             // See comment in deserialize.
+//             serializer.serialize_newtype_struct("AccountAddress", &self.0)
+//         }
+//     }
+// }
 
 #[derive(Clone, Copy, Debug)]
 pub struct AccountAddressParseError;
 
 impl fmt::Display for AccountAddressParseError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(
             f,
             "Unable to parse AccountAddress (must be hex string of length {})",
@@ -291,6 +295,7 @@ impl fmt::Display for AccountAddressParseError {
     }
 }
 
+#[cfg(feature = "std")]
 impl std::error::Error for AccountAddressParseError {}
 
 #[cfg(test)]
@@ -298,7 +303,7 @@ mod tests {
     use super::AccountAddress;
     use hex::FromHex;
     use proptest::prelude::*;
-    use std::{
+    use sp_std::{
         convert::{AsRef, TryFrom},
         str::FromStr,
     };

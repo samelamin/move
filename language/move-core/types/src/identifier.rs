@@ -27,12 +27,15 @@
 //! * specify keys for lookups in storage
 //! * do cross-module lookups while executing transactions
 
+use alloc::string::String;
 use anyhow::{bail, Result};
 #[cfg(any(test, feature = "fuzzing"))]
 use proptest::prelude::*;
 use ref_cast::RefCast;
 use serde::{Deserialize, Serialize};
-use std::{borrow::Borrow, fmt, ops::Deref, str::FromStr};
+use sp_std::boxed::Box;
+use sp_std::prelude::ToOwned;
+use sp_std::{borrow::Borrow, fmt, ops::Deref, str::FromStr, vec::Vec};
 
 /// Return true if this character can appear in a Move identifier.
 ///
@@ -312,7 +315,7 @@ macro_rules! ident_str {
         // https://github.com/rust-lang/rust-clippy/issues/6372
         #[allow(clippy::transmute_ptr_to_ptr)]
         unsafe {
-            ::std::mem::transmute::<&'static str, &'static $crate::identifier::IdentStr>(s)
+            sp_std::mem::transmute::<&'static str, &'static $crate::identifier::IdentStr>(s)
         }
     }};
 }

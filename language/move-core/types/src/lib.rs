@@ -3,6 +3,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 //! Core types for Move.
+#![cfg_attr(not(feature = "std"), no_std)]
+#![allow(clippy::unit_arg)]
+
+#[macro_use]
+extern crate alloc;
 
 pub mod abi;
 pub mod account_address;

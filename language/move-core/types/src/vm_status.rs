@@ -11,7 +11,8 @@ use proptest::prelude::*;
 #[cfg(any(test, feature = "fuzzing"))]
 use proptest_derive::Arbitrary;
 use serde::{de, ser, Deserialize, Serialize};
-use std::{convert::TryFrom, fmt};
+
+use sp_std::{convert::TryFrom, fmt};
 
 /// The minimum status code for validation statuses
 pub static VALIDATION_STATUS_MIN_CODE: u64 = 0;
@@ -313,6 +314,7 @@ impl fmt::Debug for AbortLocation {
     }
 }
 
+#[cfg(feature = "std")]
 impl std::error::Error for VMStatus {}
 
 pub mod known_locations {
@@ -323,6 +325,7 @@ pub mod known_locations {
         vm_status::AbortLocation,
     };
     use once_cell::sync::Lazy;
+    use sp_std::borrow::ToOwned;
 
     /// The Identifier for the Account module.
     pub const CORE_ACCOUNT_MODULE_IDENTIFIER: &IdentStr = ident_str!("Account");
@@ -386,7 +389,7 @@ macro_rules! derive_status_try_from_repr {
             ),*
         }
 
-        impl std::convert::TryFrom<$repr_ty> for $enum_name {
+        impl sp_std::convert::TryFrom<$repr_ty> for $enum_name {
             type Error = &'static str;
             fn try_from(value: $repr_ty) -> Result<Self, Self::Error> {
                 match value {
@@ -723,7 +726,7 @@ impl StatusCode {
 
 // TODO(#1307)
 impl ser::Serialize for StatusCode {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
+    fn serialize<S>(&self, serializer: S) -> sp_std::result::Result<S::Ok, S::Error>
     where
         S: ser::Serializer,
     {
@@ -732,7 +735,7 @@ impl ser::Serialize for StatusCode {
 }
 
 impl<'de> de::Deserialize<'de> for StatusCode {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> sp_std::result::Result<Self, D::Error>
     where
         D: de::Deserializer<'de>,
     {
@@ -744,7 +747,7 @@ impl<'de> de::Deserialize<'de> for StatusCode {
                 formatter.write_str("StatusCode as u64")
             }
 
-            fn visit_u64<E>(self, v: u64) -> std::result::Result<StatusCode, E>
+            fn visit_u64<E>(self, v: u64) -> sp_std::result::Result<StatusCode, E>
             where
                 E: de::Error,
             {
@@ -787,7 +790,7 @@ impl Arbitrary for StatusCode {
 
 #[test]
 fn test_status_codes() {
-    use std::collections::HashSet;
+    use hashbrown::HashSet;
     // Make sure that within the 0-EXECUTION_STATUS_MAX_CODE that all of the status codes succeed
     // when they should, and fail when they should.
     for possible_major_status_code in 0..=EXECUTION_STATUS_MAX_CODE {

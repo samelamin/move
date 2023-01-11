@@ -3,10 +3,13 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::language_storage::ModuleId;
+use alloc::string::String;
 use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
+use sp_std::collections::btree_map::BTreeMap;
+
+#[cfg(feature = "std")]
 use std::{
-    collections::BTreeMap,
     fs::File,
     io::{Read, Write},
     path::Path,
@@ -59,12 +62,14 @@ impl ErrorMapping {
         Ok(())
     }
 
+    #[cfg(feature = "std")]
     pub fn from_file<P: AsRef<Path>>(path: P) -> Self {
         let mut bytes = Vec::new();
         File::open(path).unwrap().read_to_end(&mut bytes).unwrap();
         bcs::from_bytes(&bytes).unwrap()
     }
 
+    #[cfg(feature = "std")]
     pub fn to_file<P: AsRef<Path>>(&self, path: P) {
         let bytes = bcs::to_bytes(self).unwrap();
         let mut file = File::create(path).unwrap();

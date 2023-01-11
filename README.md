@@ -1,4 +1,6 @@
 
+
+`cargo +nightly build  --target wasm32-unknown-unknown --no-default-features`
 [![License](https://img.shields.io/badge/license-Apache-green.svg)](LICENSE)
 [![Discord chat](https://img.shields.io/discord/903339070925721652.svg?logo=discord&style=flat-square)](https://discord.gg/M95qX3KnG8)
 

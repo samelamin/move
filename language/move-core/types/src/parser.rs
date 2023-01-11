@@ -8,8 +8,11 @@ use crate::{
     language_storage::{StructTag, TypeTag},
     transaction_argument::TransactionArgument,
 };
+use alloc::string::String;
 use anyhow::{bail, format_err, Result};
-use std::iter::Peekable;
+use sp_std::boxed::Box;
+use sp_std::{fmt, iter::Peekable};
+use sp_std::{vec, vec::Vec};
 
 #[derive(Eq, PartialEq, Debug)]
 enum Token {
@@ -242,7 +245,7 @@ impl<I: Iterator<Item = Token>> Parser<I> {
     ) -> Result<Vec<R>>
     where
         F: Fn(&mut Self) -> Result<R>,
-        R: std::fmt::Debug,
+        R: fmt::Debug,
     {
         let mut v = vec![];
         if !(self.peek() == Some(&end_token)) {
@@ -304,7 +307,7 @@ impl<I: Iterator<Item = Token>> Parser<I> {
                                     vec![]
                                 };
                                 TypeTag::Struct(Box::new(StructTag {
-                                    address: AccountAddress::from_hex_literal(&addr)?,
+                                    address: AccountAddress::from_hex_literal(&addr).unwrap(),
                                     module: Identifier::new(module)?,
                                     name: Identifier::new(name)?,
                                     type_params: ty_args,
@@ -327,11 +330,11 @@ impl<I: Iterator<Item = Token>> Parser<I> {
             Token::U32(s) => TransactionArgument::U32(s.replace('_', "").parse()?),
             Token::U64(s) => TransactionArgument::U64(s.replace('_', "").parse()?),
             Token::U128(s) => TransactionArgument::U128(s.replace('_', "").parse()?),
-            Token::U256(s) => TransactionArgument::U256(s.replace('_', "").parse()?),
+            Token::U256(s) => TransactionArgument::U256(s.replace('_', "").parse().unwrap()),
             Token::True => TransactionArgument::Bool(true),
             Token::False => TransactionArgument::Bool(false),
             Token::Address(addr) => {
-                TransactionArgument::Address(AccountAddress::from_hex_literal(&addr)?)
+                TransactionArgument::Address(AccountAddress::from_hex_literal(&addr).unwrap())
             }
             Token::Bytes(s) => TransactionArgument::U8Vector(hex::decode(s)?),
             tok => bail!("unexpected token {:?}, expected transaction argument", tok),
@@ -341,7 +344,7 @@ impl<I: Iterator<Item = Token>> Parser<I> {
 
 fn parse<F, T>(s: &str, f: F) -> Result<T>
 where
-    F: Fn(&mut Parser<std::vec::IntoIter<Token>>) -> Result<T>,
+    F: Fn(&mut Parser<sp_std::vec::IntoIter<Token>>) -> Result<T>,
 {
     let mut tokens: Vec<_> = tokenize(s)?
         .into_iter()
@@ -396,7 +399,7 @@ pub fn parse_struct_tag(s: &str) -> Result<StructTag> {
 
 #[cfg(test)]
 mod tests {
-    use std::str::FromStr;
+    use sp_std::str::FromStr;
 
     use crate::{
         account_address::AccountAddress,

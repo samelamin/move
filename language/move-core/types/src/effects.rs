@@ -8,7 +8,9 @@ use crate::{
     language_storage::{ModuleId, StructTag, TypeTag},
 };
 use anyhow::{bail, Result};
-use std::collections::btree_map::{self, BTreeMap};
+use sp_std::borrow::ToOwned;
+use sp_std::collections::btree_map::{self, BTreeMap};
+use sp_std::{vec::Vec};
 
 /// A storage operation.
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]

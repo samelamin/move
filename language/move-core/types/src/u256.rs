@@ -5,6 +5,8 @@ use ethnum::U256 as EthnumU256;
 use num::{bigint::Sign, BigInt};
 #[cfg(any(test, feature = "fuzzing"))]
 use proptest::strategy::BoxedStrategy;
+
+#[cfg(feature = "std")]
 use rand::{
     distributions::{
         uniform::{SampleUniform, UniformSampler},
@@ -12,7 +14,7 @@ use rand::{
     },
     Rng,
 };
-use std::{
+use sp_std::{
     fmt,
     mem::size_of,
     ops::{
@@ -59,14 +61,14 @@ pub struct U256CastError {
 }
 
 impl U256CastError {
-    pub fn new<T: std::convert::Into<U256>>(val: T, kind: U256CastErrorKind) -> Self {
+    pub fn new<T: sp_std::convert::Into<U256>>(val: T, kind: U256CastErrorKind) -> Self {
         Self {
             kind,
             val: val.into(),
         }
     }
 }
-
+#[cfg(feature = "std")]
 impl std::error::Error for U256CastError {}
 
 impl fmt::Display for U256CastError {
@@ -83,6 +85,7 @@ impl fmt::Display for U256CastError {
     }
 }
 
+#[cfg(feature = "std")]
 impl std::error::Error for U256FromStrError {
     fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
         self.0.source()
@@ -99,7 +102,7 @@ impl fmt::Display for U256FromStrError {
 pub struct U256(PrimitiveU256);
 
 impl fmt::Display for U256 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> sp_std::fmt::Result {
         self.0.fmt(f)
     }
 }
@@ -116,7 +119,7 @@ impl fmt::LowerHex for U256 {
     }
 }
 
-impl std::str::FromStr for U256 {
+impl sp_std::str::FromStr for U256 {
     type Err = U256FromStrError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -125,9 +128,9 @@ impl std::str::FromStr for U256 {
 }
 
 impl<'de> Deserialize<'de> for U256 {
-    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
+    fn deserialize<D>(deserializer: D) -> sp_std::result::Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
     {
         Ok(U256::from_le_bytes(
             &(<[u8; U256_NUM_BYTES]>::deserialize(deserializer)?),
@@ -136,9 +139,9 @@ impl<'de> Deserialize<'de> for U256 {
 }
 
 impl Serialize for U256 {
-    fn serialize<S>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error>
-    where
-        S: Serializer,
+    fn serialize<S>(&self, serializer: S) -> sp_std::result::Result<S::Ok, S::Error>
+        where
+            S: Serializer,
     {
         self.to_le_bytes().serialize(serializer)
     }
@@ -385,7 +388,7 @@ impl U256 {
 
     /// Downcast to a an unsigned value of type T
     /// T must be at most u128
-    pub fn down_cast_lossy<T: std::convert::TryFrom<u128>>(self) -> T {
+    pub fn down_cast_lossy<T: sp_std::convert::TryFrom<u128>>(self) -> T {
         // Size of this type
         let type_size = size_of::<T>();
         // Maximum value for this type
@@ -402,19 +405,19 @@ impl U256 {
     }
 
     /// Wrapping integer addition. Computes self + rhs,  wrapping around at the boundary of the type.
-    /// By definition in std::instrinsics, a.wrapping_add(b) = (a + b) % (2^N), where N is bit width
+    /// By definition in sp_std::instrinsics, a.wrapping_add(b) = (a + b) % (2^N), where N is bit width
     pub fn wrapping_add(self, rhs: Self) -> Self {
         Self(self.0.overflowing_add(rhs.0).0)
     }
 
     /// Wrapping integer subtraction. Computes self - rhs,  wrapping around at the boundary of the type.
-    /// By definition in std::instrinsics, a.wrapping_add(b) = (a - b) % (2^N), where N is bit width
+    /// By definition in sp_std::instrinsics, a.wrapping_add(b) = (a - b) % (2^N), where N is bit width
     pub fn wrapping_sub(self, rhs: Self) -> Self {
         Self(self.0.overflowing_sub(rhs.0).0)
     }
 
     /// Wrapping integer multiplication. Computes self * rhs,  wrapping around at the boundary of the type.
-    /// By definition in std::instrinsics, a.wrapping_mul(b) = (a * b) % (2^N), where N is bit width
+    /// By definition in sp_std::instrinsics, a.wrapping_mul(b) = (a * b) % (2^N), where N is bit width
     pub fn wrapping_mul(self, rhs: Self) -> Self {
         Self(self.0.overflowing_mul(rhs.0).0)
     }
@@ -425,7 +428,7 @@ impl U256 {
     fn wmul(self, b: Self) -> (Self, Self) {
         let half = 128;
         #[allow(non_snake_case)]
-        let LOWER_MASK: U256 = Self::max_value() >> half;
+            let LOWER_MASK: U256 = Self::max_value() >> half;
 
         let mut low = (self & LOWER_MASK).wrapping_mul(b & LOWER_MASK);
         let mut t = low >> half;
@@ -555,6 +558,7 @@ impl TryFrom<U256> for u128 {
     }
 }
 
+#[cfg(feature = "std")]
 impl Distribution<U256> for Standard {
     #[inline]
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> U256 {
@@ -573,18 +577,19 @@ pub struct UniformU256 {
     range: U256,
     z: U256,
 }
-
+#[cfg(feature = "std")]
 impl SampleUniform for U256 {
     type Sampler = UniformU256;
 }
 
+#[cfg(feature = "std")]
 impl UniformSampler for UniformU256 {
     type X = U256;
 
     fn new<B1, B2>(low: B1, high: B2) -> Self
-    where
-        B1: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
-        B2: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
+        where
+            B1: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
+            B2: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
     {
         let low = *low.borrow();
         let high = *high.borrow();
@@ -593,9 +598,9 @@ impl UniformSampler for UniformU256 {
     }
 
     fn new_inclusive<B1, B2>(low: B1, high: B2) -> Self
-    where
-        B1: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
-        B2: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
+        where
+            B1: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
+            B2: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
     {
         let low = *low.borrow();
         let high = *high.borrow();
@@ -639,9 +644,9 @@ impl UniformSampler for UniformU256 {
     }
 
     fn sample_single<R: rand::Rng + ?Sized, B1, B2>(low: B1, high: B2, rng: &mut R) -> Self::X
-    where
-        B1: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
-        B2: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
+        where
+            B1: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
+            B2: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
     {
         let low = *low.borrow();
         let high = *high.borrow();
@@ -654,9 +659,9 @@ impl UniformSampler for UniformU256 {
         high: B2,
         rng: &mut R,
     ) -> Self::X
-    where
-        B1: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
-        B2: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
+        where
+            B1: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
+            B2: rand::distributions::uniform::SampleBorrow<Self::X> + Sized,
     {
         let low = *low.borrow();
         let high = *high.borrow();
@@ -707,14 +712,14 @@ impl<'a> arbitrary::Arbitrary<'a> for U256 {
 #[test]
 fn wrapping_add() {
     // a + b overflows U256::MAX by 100
-    // By definition in std::instrinsics, a.wrapping_add(b) = (a + b) % (2^N), where N is bit width
+    // By definition in sp_std::instrinsics, a.wrapping_add(b) = (a + b) % (2^N), where N is bit width
 
     let a = U256::from(1234u32);
     let b = U256::from_str_radix(
         "115792089237316195423570985008687907853269984665640564039457584007913129638801",
         10,
     )
-    .unwrap();
+        .unwrap();
 
     assert!(a.wrapping_add(b) == U256::from(99u8));
 }

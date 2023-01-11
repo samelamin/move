@@ -8,6 +8,8 @@ use crate::{
     language_storage::{StructTag, TypeTag},
 };
 use serde::de::DeserializeOwned;
+use sp_std::vec::Vec;
+use sp_std::borrow::ToOwned;
 
 pub trait MoveStructType {
     const ADDRESS: AccountAddress = crate::language_storage::CORE_CODE_ADDRESS;

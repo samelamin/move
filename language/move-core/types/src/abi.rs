@@ -3,8 +3,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::language_storage::{ModuleId, TypeTag};
+use alloc::string::String;
 use serde::{Deserialize, Serialize};
-
+use sp_std::{vec::Vec};
 /// How to call a particular Move script (aka. an "ABI").
 #[derive(Clone, Debug, Hash, Eq, PartialEq, Serialize, Deserialize)]
 pub enum ScriptABI {

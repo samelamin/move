@@ -2,11 +2,14 @@
 // Copyright (c) The Move Contributors
 // SPDX-License-Identifier: Apache-2.0
 
+#[cfg(feature = "std")]
+use crate::paths::PathSlice;
+
 use crate::{
     paths::{self, Path},
     references::*,
 };
-use sp_std::collections::{btree_map::BTreeMap,btree_set::BTreeSet};
+use sp_std::collections::{btree_map::BTreeMap, btree_set::BTreeSet};
 use sp_std::{vec, vec::Vec};
 //**************************************************************************************************
 // Definitions
